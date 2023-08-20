@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using System.Xml.Linq;
+using System.Threading;
 
 namespace SpartanDungeon
 {
@@ -15,6 +16,12 @@ namespace SpartanDungeon
     {
         // 대대적인 수정절차.
         // 1. SceneManager를 만들어서 화면의 출력 관리.
+        // 2. 게임 끝내기 만들기.
+        // 3. 상점 만들기.
+        // 4. 장착 개선.
+        // 5. 던전 만들기.
+        // 6. 개임 저장하기.
+
         public static SceneManager sceneManager = new SceneManager();
         static void Main(string[] args)
         {
@@ -294,8 +301,16 @@ namespace SpartanDungeon
 
         public int CheckValidInput(int min, int max)
         {
+            int cursorLeft = Console.CursorLeft;
+            int cursorTop = Console.CursorTop;
+
             while (true)
             {
+                Console.SetCursorPosition(cursorLeft, cursorTop);
+                Console.WriteLine("      ");
+                Console.WriteLine("                     ");
+                Console.SetCursorPosition(cursorLeft, cursorTop);
+
                 string input = Console.ReadLine();
 
                 bool parseSuccess = int.TryParse(input, out var ret);
@@ -304,8 +319,10 @@ namespace SpartanDungeon
                     if (ret >= min && ret <= max)
                         return ret;
                 }
-
+                
                 Console.WriteLine("잘못된 입력입니다.");
+                Thread.Sleep(1000);
+                
             }
         }
     }
