@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Numerics;
+using System.Xml.Linq;
 
 namespace SpartanDungeon
 {
@@ -12,28 +13,94 @@ namespace SpartanDungeon
 
     internal class Program
     {
-        // 무기, 방어구, 악세사리 
-        
-
-        private static Character player;
-
+        // 대대적인 수정절차.
+        // 1. SceneManager를 만들어서 화면의 출력 관리.
+        public static SceneManager sceneManager = new SceneManager();
         static void Main(string[] args)
         {
-            GameDataSetting();
-            DisplayGameIntro();
+            int inputKey = 0;
+            while (inputKey != 159)
+            {
+                switch (inputKey)
+                {
+                    case 0:
+                        inputKey = sceneManager.DisplayGameIntro();
+                        if(inputKey == 0) { inputKey = 159; }
+                        break;
+                    case 1:
+                        inputKey = sceneManager.DisplayMyInfo();
+                        break;
+                    case 2:
+                        inputKey = sceneManager.DisplayInventory();
+                        break;
+                    case 3:
+                        inputKey = sceneManager.EquipManager();
+                        break;
+                }
+            }
         }
+    }
 
-        static void GameDataSetting()
+
+    public class Character
+    {
+        public string Name { get; }
+        public string Job { get; }
+        public int Level { get; }
+        public int Atk { get; }
+        public int Def { get; }
+        public int Hp { get; }
+        public int Gold { get; }
+        public List<Item> hasItems = new List<Item>();
+
+        public Character(string name, string job, int level, int atk, int def, int hp, int gold)
+        {
+            Name = name;
+            Job = job;
+            Level = level;
+            Atk = atk;
+            Def = def;
+            Hp = hp;
+            Gold = gold;
+        }
+    }
+    public class Item
+    {
+        public bool isEquiped { get; set; }
+        public string Name { get; }
+        public int Atk { get; }
+        public int Def { get; }
+        public string explanation { get; }
+        public EquipType equipType { get; }
+        public int itemValue { get; }
+
+        public Item(string name, int atk, int def, string explanation, EquipType equipType, int itemValue)
+        {
+            isEquiped = false;
+            Name = name;
+            Atk = atk;
+            Def = def;
+            this.explanation = explanation;
+            this.equipType = equipType;
+            this.itemValue = itemValue;
+        }
+    }
+
+    public class SceneManager
+    {
+        public Character player;
+
+        public SceneManager()
         {
             // 캐릭터 정보 세팅
             player = new Character("Chad", "전사", 1, 10, 5, 100, 1500);
 
             // 아이템 정보 세팅
-            player.hasItems.Add(new Item("무쇠갑옷", 0, 5, "무쇠로 만들어져 튼튼한 갑옷입니다.", EquipType.WEAPON));
-            player.hasItems.Add(new Item("낡은 검", 2, 0, "쉽게 볼 수 있는 낡은 검 입니다.", EquipType.ARMOR));
+            player.hasItems.Add(new Item("무쇠갑옷", 0, 5, "무쇠로 만들어져 튼튼한 갑옷입니다.", EquipType.ARMOR, 2000));
+            player.hasItems.Add(new Item("낡은 검", 2, 0, "쉽게 볼 수 있는 낡은 검 입니다.", EquipType.WEAPON, 600));
         }
 
-        static void DisplayGameIntro()
+        public int DisplayGameIntro()
         {
             Console.Clear();
 
@@ -42,23 +109,14 @@ namespace SpartanDungeon
             Console.WriteLine();
             Console.WriteLine("1. 상태보기");
             Console.WriteLine("2. 인벤토리");
+            Console.WriteLine("0. 끝내기");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int input = CheckValidInput(1, 2);
-            switch (input)
-            {
-                case 1:
-                    DisplayMyInfo();
-                    break;
-
-                case 2:
-                    DisplayInventory();
-                    break;
-            }
+            return CheckValidInput(0, 2);
         }
 
-        static void DisplayMyInfo()
+        public int DisplayMyInfo()
         {
             Console.Clear();
             // 변경되는 유저의 정보
@@ -68,19 +126,19 @@ namespace SpartanDungeon
             int itemDef = 0;
 
             // 착용상태 확인 및 정보적용.
-            foreach(Item item in player.hasItems)
+            foreach (Item item in player.hasItems)
             {
-                if(item.isEquiped)
+                if (item.isEquiped)
                 {
                     itemAtk += item.Atk;
                     itemDef += item.Def;
                 }
             }
-            if(itemAtk != 0)
+            if (itemAtk != 0)
             {
                 playerAtk += $" (+{itemAtk})";
             }
-            if(itemDef != 0)
+            if (itemDef != 0)
             {
                 playerDef += $" (+{itemDef})";
             }
@@ -97,16 +155,10 @@ namespace SpartanDungeon
             Console.WriteLine();
             Console.WriteLine("0. 나가기");
 
-            int input = CheckValidInput(0, 0);
-            switch (input)
-            {
-                case 0:
-                    DisplayGameIntro();
-                    break;
-            }
+            return CheckValidInput(0, 0);
         }
 
-        static void DisplayInventory()
+        public int DisplayInventory()
         {
             Console.Clear();
 
@@ -137,16 +189,17 @@ namespace SpartanDungeon
             switch (input)
             {
                 case 0:
-                    DisplayGameIntro();
                     break;
                 case 1:
-                    EquipManager();
+                    input = 3;
                     break;
 
             }
+
+            return input;
         }
 
-        static string ItemTextManager(Item item , bool epuip)
+        public string ItemTextManager(Item item, bool epuip)
         {
             // - [E]무쇠갑옷      | 방어력 +5 | 무쇠로 만들어져 튼튼한 갑옷입니다.
             string text = "- ";
@@ -156,17 +209,17 @@ namespace SpartanDungeon
                 text += (player.hasItems.IndexOf(item) + 1).ToString() + " ";
             }
 
-            if(item.isEquiped)
+            if (item.isEquiped)
             {
                 text += "[E]";
             }
             text += item.Name;
             text += "\t | ";
 
-            if( item.Atk != 0)
+            if (item.Atk != 0)
             {
                 text += "공격력 ";
-                if(item.Atk > 0)
+                if (item.Atk > 0)
                 {
                     text += "+";
                 }
@@ -176,7 +229,7 @@ namespace SpartanDungeon
                 }
                 text += item.Atk.ToString();
             }
-            if( item.Def != 0)
+            if (item.Def != 0)
             {
                 text += "방어력 ";
                 if (item.Def > 0)
@@ -196,7 +249,7 @@ namespace SpartanDungeon
             return text;
         }
 
-        static void EquipManager()
+        public int EquipManager()
         {
             Console.Clear();
 
@@ -226,21 +279,20 @@ namespace SpartanDungeon
             int input = CheckValidInput(0, player.hasItems.Count);
             switch (input)
             {
-
                 case 0:
-                    DisplayInventory();
-                    break;
+                    return 2;
                 default:
-                    if(player.hasItems[input - 1].isEquiped)
+                    if (player.hasItems[input - 1].isEquiped)
                         player.hasItems[input - 1].isEquiped = false;
                     else
                         player.hasItems[input - 1].isEquiped = true;
                     break;
             }
-            EquipManager();
+            input = EquipManager();
+            return input;
         }
 
-        static int CheckValidInput(int min, int max)
+        public int CheckValidInput(int min, int max)
         {
             while (true)
             {
@@ -255,50 +307,6 @@ namespace SpartanDungeon
 
                 Console.WriteLine("잘못된 입력입니다.");
             }
-        }
-    }
-
-    public class Item
-    {
-        public bool isEquiped { get; set; }
-        public string Name { get; }
-        public int Atk { get; }
-        public int Def { get; }
-        public string explanation { get; }
-        public EquipType equipType { get; }
-
-        public Item(string name, int atk, int def, string explanation, EquipType equipType)
-        {
-            isEquiped = false;
-            Name = name;
-            Atk = atk;
-            Def = def;
-            this.explanation = explanation;
-            this.equipType = equipType;
-        }
-    }
-
-
-    public class Character
-    {
-        public string Name { get; }
-        public string Job { get; }
-        public int Level { get; }
-        public int Atk { get; }
-        public int Def { get; }
-        public int Hp { get; }
-        public int Gold { get; }
-        public List<Item> hasItems = new List<Item>();
-
-        public Character(string name, string job, int level, int atk, int def, int hp, int gold)
-        {
-            Name = name;
-            Job = job;
-            Level = level;
-            Atk = atk;
-            Def = def;
-            Hp = hp;
-            Gold = gold;
         }
     }
 }
