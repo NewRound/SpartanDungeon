@@ -1,7 +1,20 @@
-﻿namespace SpartanDungeon
+﻿using System.Xml.Linq;
+
+namespace SpartanDungeon
 {
+    // 무기, 방어구, 악세사리 
+    public enum EquipType
+    {
+        WEAPON,
+        ARMOR,
+        ACCESSORY,
+    }
+
     internal class Program
     {
+        // 무기, 방어구, 악세사리 
+        
+
         private static Character player;
 
         static void Main(string[] args)
@@ -16,6 +29,8 @@
             player = new Character("Chad", "전사", 1, 10, 5, 100, 1500);
 
             // 아이템 정보 세팅
+            player.hasItems.Add(new Item("무쇠갑옷", 0, 5, "무쇠로 만들어져 튼튼한 갑옷입니다.", EquipType.WEAPON));
+            player.hasItems.Add(new Item("낡은 검", 2, 0, "쉽게 볼 수 있는 낡은 검 입니다.", EquipType.ARMOR));
         }
 
         static void DisplayGameIntro()
@@ -38,7 +53,7 @@
                     break;
 
                 case 2:
-                    // 작업해보기
+                    DisplayInventory();
                     break;
             }
         }
@@ -46,14 +61,37 @@
         static void DisplayMyInfo()
         {
             Console.Clear();
+            // 변경되는 유저의 정보
+            string playerAtk = player.Atk.ToString();
+            string playerDef = player.Def.ToString();
+            int itemAtk = 0;
+            int itemDef = 0;
+
+            // 착용상태 확인 및 정보적용.
+            foreach(Item item in player.hasItems)
+            {
+                if(item.isEquiped)
+                {
+                    itemAtk += item.Atk;
+                    itemDef += item.Def;
+                }
+            }
+            if(itemAtk != 0)
+            {
+                playerAtk += $" (+{itemAtk})";
+            }
+            if(itemDef != 0)
+            {
+                playerDef += $" (+{itemDef})";
+            }
 
             Console.WriteLine("상태보기");
             Console.WriteLine("캐릭터의 정보르 표시합니다.");
             Console.WriteLine();
             Console.WriteLine($"Lv.{player.Level}");
             Console.WriteLine($"{player.Name}({player.Job})");
-            Console.WriteLine($"공격력 :{player.Atk}");
-            Console.WriteLine($"방어력 : {player.Def}");
+            Console.WriteLine($"공격력 :{playerAtk}");
+            Console.WriteLine($"방어력 : {playerDef}");
             Console.WriteLine($"체력 : {player.Hp}");
             Console.WriteLine($"Gold : {player.Gold} G");
             Console.WriteLine();
@@ -70,7 +108,136 @@
 
         static void DisplayInventory()
         {
+            Console.Clear();
 
+            Console.WriteLine("인벤토리");
+            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+            Console.WriteLine();
+            Console.WriteLine("[아이템 목록]");
+
+            if (player.hasItems.Count == 0)
+            {
+                Console.WriteLine("보유하신 아이템이 없습니다.");
+            }
+            else
+            {
+                for (int i = 0; i < player.hasItems.Count; i++)
+                {
+                    Console.WriteLine("{0}", ItemTextManager(player.hasItems[i], false));
+                }
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("1. 장착 관리");
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            int input = CheckValidInput(0, 1);
+            switch (input)
+            {
+                case 0:
+                    DisplayGameIntro();
+                    break;
+                case 1:
+                    EquipManager();
+                    break;
+
+            }
+        }
+
+        static string ItemTextManager(Item item , bool epuip)
+        {
+            // - [E]무쇠갑옷      | 방어력 +5 | 무쇠로 만들어져 튼튼한 갑옷입니다.
+            string text = "- ";
+            // 장착관리시
+            if (epuip)
+            {
+                text += (player.hasItems.IndexOf(item) + 1).ToString() + " ";
+            }
+
+            if(item.isEquiped)
+            {
+                text += "[E]";
+            }
+            text += item.Name;
+            text += "\t | ";
+
+            if( item.Atk != 0)
+            {
+                text += "공격력 ";
+                if(item.Atk > 0)
+                {
+                    text += "+";
+                }
+                else
+                {
+                    text += "-";
+                }
+                text += item.Atk.ToString();
+            }
+            if( item.Def != 0)
+            {
+                text += "방어력 ";
+                if (item.Def > 0)
+                {
+                    text += "+";
+                }
+                else
+                {
+                    text += "-";
+                }
+                text += item.Def.ToString();
+            }
+            text += "\t | ";
+
+            text += item.explanation;
+
+            return text;
+        }
+
+        static void EquipManager()
+        {
+            Console.Clear();
+
+            Console.WriteLine("인벤토리");
+            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+            Console.WriteLine();
+            Console.WriteLine("[아이템 목록]");
+
+            if (player.hasItems.Count == 0)
+            {
+                Console.WriteLine("보유하신 아이템이 없습니다.");
+            }
+            else
+            {
+                for (int i = 0; i < player.hasItems.Count; i++)
+                {
+                    Console.WriteLine("{0}", ItemTextManager(player.hasItems[i], true));
+                }
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            int input = CheckValidInput(0, player.hasItems.Count);
+            switch (input)
+            {
+
+                case 0:
+                    DisplayInventory();
+                    break;
+                default:
+                    if(player.hasItems[input - 1].isEquiped)
+                        player.hasItems[input - 1].isEquiped = false;
+                    else
+                        player.hasItems[input - 1].isEquiped = true;
+                    break;
+            }
+            EquipManager();
         }
 
         static int CheckValidInput(int min, int max)
@@ -91,6 +258,26 @@
         }
     }
 
+    public class Item
+    {
+        public bool isEquiped { get; set; }
+        public string Name { get; }
+        public int Atk { get; }
+        public int Def { get; }
+        public string explanation { get; }
+        public EquipType equipType { get; }
+
+        public Item(string name, int atk, int def, string explanation, EquipType equipType)
+        {
+            isEquiped = false;
+            Name = name;
+            Atk = atk;
+            Def = def;
+            this.explanation = explanation;
+            this.equipType = equipType;
+        }
+    }
+
 
     public class Character
     {
@@ -101,6 +288,7 @@
         public int Def { get; }
         public int Hp { get; }
         public int Gold { get; }
+        public List<Item> hasItems = new List<Item>();
 
         public Character(string name, string job, int level, int atk, int def, int hp, int gold)
         {
