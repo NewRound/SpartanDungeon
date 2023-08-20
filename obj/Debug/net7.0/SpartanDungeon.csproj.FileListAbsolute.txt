@@ -1,0 +1,15 @@
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\bin\Debug\net7.0\SpartanDungeon.exe
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\bin\Debug\net7.0\SpartanDungeon.deps.json
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\bin\Debug\net7.0\SpartanDungeon.runtimeconfig.json
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\bin\Debug\net7.0\SpartanDungeon.dll
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\bin\Debug\net7.0\SpartanDungeon.pdb
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\SpartanDungeon.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\SpartanDungeon.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\SpartanDungeon.AssemblyInfoInputs.cache
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\SpartanDungeon.AssemblyInfo.cs
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\SpartanDungeon.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\SpartanDungeon.dll
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\refint\SpartanDungeon.dll
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\SpartanDungeon.pdb
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\SpartanDungeon.genruntimeconfig.cache
+C:\Users\user\Desktop\Unity_nbcamp\coding\SpartanDungeon\obj\Debug\net7.0\ref\SpartanDungeon.dll
