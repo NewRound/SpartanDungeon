@@ -16,7 +16,7 @@ namespace SpartanDungeon
     {
         // 대대적인 수정절차.
         // 1. SceneManager를 만들어서 화면의 출력 관리.
-        // 2. 게임 끝내기 만들기.
+        // 2. 게임 끝내기 만들기. ------------
         // 3. 상점 만들기.
         // 4. 장착 개선.
         // 5. 던전 만들기.
@@ -47,7 +47,6 @@ namespace SpartanDungeon
             }
         }
     }
-
 
     public class Character
     {
@@ -92,7 +91,6 @@ namespace SpartanDungeon
             this.itemValue = itemValue;
         }
     }
-
     public class SceneManager
     {
         public Character player;
