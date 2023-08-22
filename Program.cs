@@ -11,43 +11,6 @@ namespace SpartanDungeon
         ARMOR,
         ACCESSORY,
     }
-
-    internal class Program
-    {
-        // 대대적인 수정절차.
-        // 1. SceneManager를 만들어서 화면의 출력 관리.
-        // 2. 게임 끝내기 만들기. ------------
-        // 3. 상점 만들기.
-        // 4. 장착 개선.
-        // 5. 던전 만들기.
-        // 6. 개임 저장하기.
-
-        public static SceneManager sceneManager = new SceneManager();
-        static void Main(string[] args)
-        {
-            int inputKey = 0;
-            while (inputKey != 159)
-            {
-                switch (inputKey)
-                {
-                    case 0:
-                        inputKey = sceneManager.DisplayGameIntro();
-                        if(inputKey == 0) { inputKey = 159; }
-                        break;
-                    case 1:
-                        inputKey = sceneManager.DisplayMyInfo();
-                        break;
-                    case 2:
-                        inputKey = sceneManager.DisplayInventory();
-                        break;
-                    case 3:
-                        inputKey = sceneManager.EquipManager();
-                        break;
-                }
-            }
-        }
-    }
-
     public class Character
     {
         public string Name { get; }
@@ -91,9 +54,52 @@ namespace SpartanDungeon
             this.itemValue = itemValue;
         }
     }
+
+
+    internal class Program
+    {
+        // 대대적인 수정절차.
+        // 1. SceneManager를 만들어서 화면의 출력 관리.
+        // 2. 게임 끝내기 만들기. ------------
+        // 3. 상점 만들기.
+        /*
+         * 아이템의 저장. 
+         * 
+         */
+        // 4. 장착 개선.
+        // 5. 던전 만들기.
+        // 6. 개임 저장하기.
+
+        public static SceneManager sceneManager = new SceneManager();
+        static void Main(string[] args)
+        {
+            int inputKey = 0;
+            while (inputKey != 159)
+            {
+                switch (inputKey)
+                {
+                    case 0:
+                        inputKey = sceneManager.DisplayGameIntro();
+                        if(inputKey == 0) { inputKey = 159; }
+                        break;
+                    case 1:
+                        inputKey = sceneManager.DisplayMyInfo();
+                        break;
+                    case 2:
+                        inputKey = sceneManager.DisplayInventory();
+                        break;
+                    case 3:
+                        inputKey = sceneManager.EquipManager();
+                        break;
+                }
+            }
+        }
+    }
+
     public class SceneManager
     {
         public Character player;
+        public List<Item> shopItem = new List<Item>();
 
         public SceneManager()
         {
@@ -103,6 +109,11 @@ namespace SpartanDungeon
             // 아이템 정보 세팅
             player.hasItems.Add(new Item("무쇠갑옷", 0, 5, "무쇠로 만들어져 튼튼한 갑옷입니다.", EquipType.ARMOR, 2000));
             player.hasItems.Add(new Item("낡은 검", 2, 0, "쉽게 볼 수 있는 낡은 검 입니다.", EquipType.WEAPON, 600));
+
+
+            shopItem.Add(new Item("무쇠갑옷", 0, 5, "무쇠로 만들어져 튼튼한 갑옷입니다.", EquipType.ARMOR, 2000));
+
+            shopItem.Add(new Item("낡은 검", 2, 0, "쉽게 볼 수 있는 낡은 검 입니다.", EquipType.WEAPON, 600));
         }
 
         public int DisplayGameIntro()
