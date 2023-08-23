@@ -11,6 +11,15 @@ namespace SpartanDungeon
         ARMOR,
         ACCESSORY,
     }
+    public enum Scene
+    {
+        GAME_INFO,
+        MY_INFO,
+        INVENTORY_INFO,
+        INVENTORY_EQUIP,
+        SHOP_INFO,
+
+    }
     public class Character
     {
         public string Name { get; }
@@ -160,7 +169,7 @@ namespace SpartanDungeon
             }
 
             Console.WriteLine("상태보기");
-            Console.WriteLine("캐릭터의 정보르 표시합니다.");
+            Console.WriteLine("캐릭터의 정보를 표시합니다.");
             Console.WriteLine();
             Console.WriteLine($"Lv.{player.Level}");
             Console.WriteLine($"{player.Name}({player.Job})");
@@ -230,7 +239,8 @@ namespace SpartanDungeon
                 text += "[E]";
             }
             text += item.Name;
-            text += "\t | ";
+            text = text.PadRight(20-CountKoreanCharacters(item.Name), ' ');
+            text += "| ";
 
             if (item.Atk != 0)
             {
@@ -258,7 +268,8 @@ namespace SpartanDungeon
                 }
                 text += item.Def.ToString();
             }
-            text += "\t | ";
+            text = text.PadRight(29 - CountKoreanCharacters(item.Name), ' ');
+            text += "| ";
 
             text += item.explanation;
 
@@ -308,6 +319,16 @@ namespace SpartanDungeon
             return input;
         }
 
+        public int DisplayShop()
+        {
+            return 0;
+        }
+
+        public int DisplayDungen()
+        {
+            return 0;
+        }
+
         public int CheckValidInput(int min, int max)
         {
             int cursorLeft = Console.CursorLeft;
@@ -333,6 +354,20 @@ namespace SpartanDungeon
                 Thread.Sleep(1000);
                 
             }
+        }
+
+        public int CountKoreanCharacters(string input) //한글 카운트 하기
+        {
+            int koreanCount = 0;
+            foreach (char c in input)
+            {
+                // 한글 범위: 0xAC00 - 0xD7A3
+                if (c >= 0xAC00 && c <= 0xD7A3)
+                {
+                    koreanCount++;
+                }
+            }
+            return koreanCount;
         }
     }
 }
